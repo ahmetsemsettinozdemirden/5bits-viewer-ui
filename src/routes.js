@@ -7,6 +7,7 @@ import TableList from "views/TableList.jsx";
 import Typography from "views/Typography.jsx";
 import UserProfile from "views/UserProfile.jsx";
 import TestPage from "./views/TestPage";
+import InvTestPage from "./views/InvTestPage";
 
 var routes = [
   {
@@ -17,6 +18,16 @@ var routes = [
     component: TestPage,
     layout: "/admin"
   },
+  {
+    invisible: true,
+    path: "/inv-test",
+    name: "Invisible Test Page",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: InvTestPage,
+    layout: "/admin"
+  },
+  
   {
     path: "/dashboard",
     name: "Dashboard",
