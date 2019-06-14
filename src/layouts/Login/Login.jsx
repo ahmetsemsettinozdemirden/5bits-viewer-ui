@@ -52,7 +52,7 @@ class Admin extends React.Component {
       // }
       document.documentElement.scrollTop = 0;
       document.scrollingElement.scrollTop = 0;
-      this.refs.mainPanel.scrollTop = 0;
+      // this.refs.mainPanel.scrollTop = 0;
     }
   }
   // this function opens and closes the sidebar on small devices

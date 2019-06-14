@@ -15,12 +15,11 @@ import {
   CardBody
 } from "reactstrap";
 
-class LoginPage extends React.Component {
+class ForgotPasswordPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
-      password: ""
+      email: ""
     }
   }
 
@@ -28,11 +27,7 @@ class LoginPage extends React.Component {
     this.setState({email: event.target.value});
   }
 
-  onPasswordChange = (event) => {
-    this.setState({password: event.target.value});
-  }
-
-  onLogin = (event) => {
+  onSendCode = (event) => {
     
   }
 
@@ -44,7 +39,8 @@ class LoginPage extends React.Component {
             <Col md="4">
               <Card>
                 <CardHeader>
-                  <h1 style={{font: "Poppins", fontSize:"64px", textAlign: "center", paddingTop: "32px"}}>5Bits Viewer</h1>
+                  <h1 style={{font: "Poppins", fontSize:"48px", textAlign: "center", paddingTop: "32px"}}>5Bits Viewer</h1>
+                  <h2 style={{font: "Poppins", fontSize:"32px", textAlign: "center", paddingTop: "0px"}}>Forgot Password</h2>
                 </CardHeader>
                 <CardBody>
                   <form>
@@ -59,23 +55,11 @@ class LoginPage extends React.Component {
                         onChange={this.onEmailChange}
                       />
                     </FormGroup>
-                    <FormGroup>
-                      <Label for="examplePassword">Password</Label>
-                      <Input
-                        type="password"
-                        name="password"
-                        id="examplePassword"
-                        placeholder="Password"
-                        autoComplete="off"
-                        value={this.state.password}
-                        onChange={this.onPasswordChange}
-                      />
-                    </FormGroup>
-                    <Button style={{width: "100%"}} color="primary" onClick={this.onLogin}>
-                      Login
+                    <Button style={{width: "100%"}} color="primary" onClick={this.onSendCode}>
+                      Send Code
                     </Button>
-                    <Link to={{pathname:"/login/forgot-password"}} className="btn-fill btn btn-secondary" style={{width: "100%", marginLeft: "1px"}}> 
-                      Forgot Password
+                    <Link to={{pathname:"/login/login"}} className="btn-fill btn btn-secondary" style={{width: "100%", marginLeft: "1px"}}> 
+                      Go to Login
                     </Link>
                   </form>
                 </CardBody>
@@ -88,4 +72,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default ForgotPasswordPage;

@@ -23,11 +23,11 @@ var routes = [
   },
   {
     invisible: true,
-    path: "/reset-password",
-    name: "Reset Password Page",
+    path: "/forgot-password",
+    name: "Forgot Password Page",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-app",
-    component: InvTestPage,
+    component: ForgotPasswordPage,
     layout: "/login"
   },
   {
