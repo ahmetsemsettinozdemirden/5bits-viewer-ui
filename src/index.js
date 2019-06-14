@@ -19,7 +19,7 @@ ReactDOM.render(
       <Route path="/login" render={props => <LoginLayout {...props} />} />
       <Route path="/admin" render={props => <AdminLayout {...props} />} />
       <Route path="/rtl" render={props => <RTLLayout {...props} />} />
-      <Redirect from="/" to="/login/" />
+      <Redirect from="/" to="/login/login" />
     </Switch>
   </Router>,
   document.getElementById("root")
