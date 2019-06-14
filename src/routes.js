@@ -6,8 +6,17 @@ import Rtl from "views/Rtl.jsx";
 import TableList from "views/TableList.jsx";
 import Typography from "views/Typography.jsx";
 import UserProfile from "views/UserProfile.jsx";
+import TestPage from "./views/TestPage";
 
 var routes = [
+  {
+    path: "/test",
+    name: "Test Page",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: TestPage,
+    layout: "/admin"
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
