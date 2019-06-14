@@ -9,6 +9,7 @@ import UserProfile from "views/UserProfile.jsx";
 import TestPage from "./views/home/TestPage";
 import InvTestPage from "./views/home/InvTestPage";
 import LoginPage from "./views/login/LoginPage";
+import ForgotPasswordPage from "./views/login/ForgotPasswordPage";
 
 var routes = [
   {
@@ -22,11 +23,11 @@ var routes = [
   },
   {
     invisible: true,
-    path: "/reset-password",
-    name: "Reset Password Page",
+    path: "/forgot-password",
+    name: "Forgot Password Page",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-app",
-    component: InvTestPage,
+    component: ForgotPasswordPage,
     layout: "/login"
   },
   {
