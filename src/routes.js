@@ -6,10 +6,29 @@ import Rtl from "views/Rtl.jsx";
 import TableList from "views/TableList.jsx";
 import Typography from "views/Typography.jsx";
 import UserProfile from "views/UserProfile.jsx";
-import TestPage from "./views/TestPage";
-import InvTestPage from "./views/InvTestPage";
+import TestPage from "./views/home/TestPage";
+import InvTestPage from "./views/home/InvTestPage";
+import LoginPage from "./views/login/LoginPage";
 
 var routes = [
+  {
+    invisible: true,
+    path: "/login",
+    name: "Login Page",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: LoginPage,
+    layout: "/login"
+  },
+  {
+    invisible: true,
+    path: "/reset-password",
+    name: "Reset Password Page",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: InvTestPage,
+    layout: "/login"
+  },
   {
     path: "/test",
     name: "Test Page",
