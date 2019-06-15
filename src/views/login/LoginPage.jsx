@@ -14,6 +14,8 @@ import {
   CardHeader,
   CardBody
 } from "reactstrap";
+import globalStore from '../../store/globalStore'
+import { view } from 'react-easy-state'
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -71,10 +73,10 @@ class LoginPage extends React.Component {
                         onChange={this.onPasswordChange}
                       />
                     </FormGroup>
-                    <Button style={{width: "100%"}} color="primary" onClick={this.onLogin}>
-                      Login
+                    <Button style={{width: "100%"}} color="primary" onClick={globalStore.increment}>
+                      {globalStore.num}Login
                     </Button>
-                    <Link to={{pathname:"/login/forgot-password"}} className="btn-fill btn btn-secondary" style={{width: "100%", marginLeft: "1px"}}> 
+                    <Link to={{pathname:"/admin/test"}} className="btn-fill btn btn-secondary" style={{width: "100%", marginLeft: "1px"}}> 
                       Forgot Password
                     </Link>
                   </form>
@@ -88,4 +90,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default view(LoginPage);
