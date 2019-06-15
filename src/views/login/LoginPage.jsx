@@ -2,6 +2,7 @@ import React from "react";
 
 // reactstrap components
 import { Link, Redirect } from "react-router-dom";
+import Notify from 'react-notification-alert';
 import { 
   Row, 
   Col,
@@ -14,6 +15,7 @@ import {
   CardHeader,
   CardBody
 } from "reactstrap";
+import { API_URL } from "../../config"
 import globalStore from '../../store/globalStore'
 
 class LoginPage extends React.Component {
@@ -34,9 +36,44 @@ class LoginPage extends React.Component {
   }
 
   onLogin = (event) => {
-    globalStore.email = 'ahmetozdemirden@gmail.com'
-    globalStore.token = 'asdasdasd.asdasdasd.asdasdasd'
-    this.forceUpdate();
+    fetch(`${API_URL}/login`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password
+      })
+    }).then(res => {
+      if (!res.ok)
+        throw res
+      return res.json()
+    }).then(body => {
+      console.log("success")
+      globalStore.email = this.state.email
+      globalStore.token = body.accessToken
+      this.forceUpdate();
+    }).catch(err => {
+      err.text().then(text => {
+        console.log(text)
+        var options = {
+          place: "tc",
+          message: (
+            <div>
+              <div>
+                {text}
+              </div>
+            </div>
+          ),
+          type: "danger",
+          icon: "tim-icons icon-bell-55",
+          autoDismiss: 7
+        };
+        this.refs.notify.notificationAlert(options);
+      })
+    })
   }
 
   render() {
@@ -44,6 +81,7 @@ class LoginPage extends React.Component {
     return (
       <>
         <div className="content" style={{paddingTop: "80px"}}>
+          <Notify ref="notify"/>
           <Row className="justify-content-md-center">
             <Col md="4">
               <Card>
