@@ -78,7 +78,7 @@ class LoginPage extends React.Component {
   }
 
   render() {
-    if(globalStore.token) return <Redirect to="/admin/test" />
+    if(globalStore.token) return <Redirect to="/admin/weekly-schedule" />
     return (
       <>
         <div className="content" style={{paddingTop: "80px"}}>

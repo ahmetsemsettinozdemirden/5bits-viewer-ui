@@ -1,18 +1,14 @@
-import Dashboard from "views/Dashboard.jsx";
-import Icons from "views/Icons.jsx";
-import Map from "views/Map.jsx";
-import Notifications from "views/Notifications.jsx";
-import Rtl from "views/Rtl.jsx";
-import TableList from "views/TableList.jsx";
-import Typography from "views/Typography.jsx";
-import UserProfile from "views/UserProfile.jsx";
-import TestPage from "./views/home/TestPage";
-import InvTestPage from "./views/home/InvTestPage";
-import CourseTable from "./views/home/CourseTable";
 import LoginPage from "./views/login/LoginPage";
 import ForgotPasswordPage from "./views/login/ForgotPasswordPage";
+import WeeklySchedulePage from "./views/home/WeeklySchedulePage";
+import ManageCoursesPage from "./views/home/ManageCoursesPage";
+import EmailListPage from "./views/home/EmailListPage";
+import SendNotificationPage from "./views/home/SendNotificationPage";
+import UserManagementPage from "./views/home/UserManagementPage";
+import SettingsPage from "./views/home/SettingsPage";
 
 var routes = [
+  // login
   {
     invisible: true,
     path: "/login",
@@ -31,95 +27,55 @@ var routes = [
     component: ForgotPasswordPage,
     layout: "/login"
   },
+  // home
   {
-    path: "/test",
-    name: "Test Page",
+    path: "/weekly-schedule",
+    name: "Weekly Schedule",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-app",
-    component: TestPage,
+    component: WeeklySchedulePage,
+    layout: "/admin"
+  },
+  {
+    path: "/manage-courses",
+    name: "Manage Courses",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: ManageCoursesPage,
+    layout: "/admin"
+  },
+  {
+    path: "/email-list",
+    name: "Email List",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: EmailListPage,
+    layout: "/admin"
+  },
+  {
+    path: "/send-notification",
+    name: "Send Notification",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: SendNotificationPage,
+    layout: "/admin"
+  },
+  {
+    path: "/user-management",
+    name: "User Management",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-app",
+    component: UserManagementPage,
     layout: "/admin"
   },
   {
     invisible: true,
-    path: "/inv-test",
-    name: "Invisible Test Page",
+    path: "/settings",
+    name: "Settings",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-app",
-    component: InvTestPage,
+    component: SettingsPage,
     layout: "/admin"
-  },
-  {
-    path: "/course-table",
-    name: "course table",
-    rtlName: "ار تي ال",
-    icon: "tim-icons icon-world",
-    component: CourseTable,
-    layout: "/admin"
-  },
-
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard,
-    layout: "/admin"
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    rtlName: "الرموز",
-    icon: "tim-icons icon-atom",
-    component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/map",
-    name: "Map",
-    rtlName: "خرائط",
-    icon: "tim-icons icon-pin",
-    component: Map,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    rtlName: "إخطارات",
-    icon: "tim-icons icon-bell-55",
-    component: Notifications,
-    layout: "/admin"
-  },
-  {
-    path: "/user-profile",
-    name: "User Profile",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: "tim-icons icon-single-02",
-    component: UserProfile,
-    layout: "/admin"
-  },
-  {
-    path: "/tables",
-    name: "Table List",
-    rtlName: "قائمة الجدول",
-    icon: "tim-icons icon-puzzle-10",
-    component: TableList,
-    layout: "/admin"
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    rtlName: "طباعة",
-    icon: "tim-icons icon-align-center",
-    component: Typography,
-    layout: "/admin"
-  },
-  {
-    path: "/rtl-support",
-    name: "RTL Support",
-    rtlName: "ار تي ال",
-    icon: "tim-icons icon-world",
-    component: Rtl,
-    layout: "/rtl"
   }
 ];
 export default routes;

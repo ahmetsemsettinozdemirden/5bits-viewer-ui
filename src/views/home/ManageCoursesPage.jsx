@@ -1,7 +1,7 @@
 import React from "react";
 
 // reactstrap components
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -11,19 +11,33 @@ import {
   Row,
   Col
 } from "reactstrap";
+import { view } from 'react-easy-state'
+import globalStore from '../../store/globalStore'
 
-class CourseTable extends React.Component {
+class ManageCoursesPage extends React.Component {
   constructor(props) {
     super(props);
     // TO DO: get json file from backend
-    var res =
-      '[{"courseCode":"CENG113","courseName":"Programming Basics","lecturerName":"Nesli Erdogmus","isOffered":"Yes"},{"courseCode":"CENG312","courseName":"Computer Networks","lecturerName":"Tolga Ayav","isOffered":"No"}]';
     this.state = {
-      courses: JSON.parse(res)
+      courses: [
+        {
+          "courseCode":"CENG113",
+          "courseName":"Programming Basics",
+          "lecturerName":"Nesli Erdogmus",
+          "isOffered":"Yes"
+        },
+        {
+          "courseCode":"CENG312",
+          "courseName":"Computer Networks",
+          "lecturerName":"Tolga Ayav",
+          "isOffered":"No"
+        }
+      ]
     };
   }
 
   render() {
+    if(globalStore.token === '') return <Redirect to="/login/login" />
     return (
       <>
         <div className="content">
@@ -96,4 +110,4 @@ class CourseTable extends React.Component {
   }
 }
 
-export default CourseTable;
+export default view(ManageCoursesPage);
