@@ -1,20 +1,21 @@
 import React from "react";
 
 // reactstrap components
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Row, Col } from "reactstrap";
 import { view } from 'react-easy-state'
 import globalStore from '../../store/globalStore'
 
 class TestPage extends React.Component {
   render() {
+    if(globalStore.token === '') return <Redirect to="/login/login" />
     return (
       <>
         <div className="content">
           <Row>
             <Col md="12">
             Test Page
-            {globalStore.num}
+            {globalStore.email}, {globalStore.token}
             </Col>
           </Row>
           <Row>

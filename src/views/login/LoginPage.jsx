@@ -1,7 +1,7 @@
 import React from "react";
 
 // reactstrap components
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { 
   Row, 
   Col,
@@ -15,7 +15,6 @@ import {
   CardBody
 } from "reactstrap";
 import globalStore from '../../store/globalStore'
-import { view } from 'react-easy-state'
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -35,10 +34,13 @@ class LoginPage extends React.Component {
   }
 
   onLogin = (event) => {
-    
+    globalStore.email = 'ahmetozdemirden@gmail.com'
+    globalStore.token = 'asdasdasd.asdasdasd.asdasdasd'
+    this.forceUpdate();
   }
 
   render() {
+    if(globalStore.token) return <Redirect to="/admin/test" />
     return (
       <>
         <div className="content" style={{paddingTop: "80px"}}>
@@ -73,10 +75,10 @@ class LoginPage extends React.Component {
                         onChange={this.onPasswordChange}
                       />
                     </FormGroup>
-                    <Button style={{width: "100%"}} color="primary" onClick={globalStore.increment}>
-                      {globalStore.num}Login
+                    <Button style={{width: "100%"}} color="primary" onClick={this.onLogin}>
+                      Login
                     </Button>
-                    <Link to={{pathname:"/admin/test"}} className="btn-fill btn btn-secondary" style={{width: "100%", marginLeft: "1px"}}> 
+                    <Link to={{pathname:"/login/forgot-password"}} className="btn-fill btn btn-secondary" style={{width: "100%", marginLeft: "1px"}}> 
                       Forgot Password
                     </Link>
                   </form>
@@ -90,4 +92,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default view(LoginPage);
+export default LoginPage;
