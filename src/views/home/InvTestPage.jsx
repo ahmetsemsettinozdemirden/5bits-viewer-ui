@@ -3,6 +3,7 @@ import React from "react";
 // reactstrap components
 import { Redirect } from "react-router-dom";
 import { Row, Col } from "reactstrap";
+import { view } from 'react-easy-state'
 import globalStore from '../../store/globalStore'
 
 class InvTestPage extends React.Component {
@@ -22,4 +23,4 @@ class InvTestPage extends React.Component {
   }
 }
 
-export default InvTestPage;
+export default view(InvTestPage);

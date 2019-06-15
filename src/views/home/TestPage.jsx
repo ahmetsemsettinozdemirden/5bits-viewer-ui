@@ -14,8 +14,9 @@ class TestPage extends React.Component {
         <div className="content">
           <Row>
             <Col md="12">
-            Test Page
-            {globalStore.email}, {globalStore.token}
+            Test Page<br />
+            email: {globalStore.email}<br />
+            token: {globalStore.token}
             </Col>
           </Row>
           <Row>

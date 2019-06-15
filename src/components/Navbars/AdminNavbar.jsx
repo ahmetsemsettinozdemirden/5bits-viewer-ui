@@ -19,6 +19,7 @@ import {
   Container,
   Modal
 } from "reactstrap";
+import { API_URL } from "../../config"
 import globalStore from '../../store/globalStore'
 
 class AdminNavbar extends React.Component {
@@ -191,6 +192,14 @@ class AdminNavbar extends React.Component {
                     </NavLink>
                     <DropdownItem divider tag="li" />
                     <NavLink tag="li" onClick={e => {
+                      fetch(`${API_URL}/logout`, {
+                        method: 'PUT',
+                        headers: {
+                          Authorization: 'Bearer ' + globalStore.token,
+                        }
+                      }).then(res => {
+                        console.log("ok: ", res.ok)
+                      })
                       globalStore.email = ''
                       globalStore.token = ''
                       e.preventDefault()
