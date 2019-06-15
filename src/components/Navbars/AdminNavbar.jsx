@@ -19,6 +19,7 @@ import {
   Container,
   Modal
 } from "reactstrap";
+import { Link } from 'react-router-dom'
 import { API_URL } from "../../config"
 import globalStore from '../../store/globalStore'
 
@@ -184,12 +185,9 @@ class AdminNavbar extends React.Component {
                       {globalStore.email}
                     </DropdownItem>
                     <DropdownItem divider tag="li" />
-                    <NavLink tag="li">
-                      <DropdownItem className="nav-item">Profile</DropdownItem>
-                    </NavLink>
-                    <NavLink tag="li">
+                    <Link to={{pathname:"/admin/settings"}}> 
                       <DropdownItem className="nav-item">Settings</DropdownItem>
-                    </NavLink>
+                    </Link>
                     <DropdownItem divider tag="li" />
                     <NavLink tag="li" onClick={e => {
                       fetch(`${API_URL}/logout`, {
