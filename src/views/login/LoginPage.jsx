@@ -21,9 +21,10 @@ import globalStore from '../../store/globalStore'
 class LoginPage extends React.Component {
   constructor(props) {
     super(props);
+    // TODO: revert these
     this.state = {
-      email: "",
-      password: ""
+      email: "test@email.com",
+      password: "password"
     }
   }
 
