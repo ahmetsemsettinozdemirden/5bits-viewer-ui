@@ -9,7 +9,7 @@ import UserProfile from "views/UserProfile.jsx";
 import TestPage from "./views/home/TestPage";
 import InvTestPage from "./views/home/InvTestPage";
 import LoginPage from "./views/login/LoginPage";
-import ForgotPasswordPage from "./views/login/ForgotPasswordPage";
+import CourseTable from "./views/CourseTable";
 
 var routes = [
   {
@@ -47,7 +47,7 @@ var routes = [
     component: InvTestPage,
     layout: "/admin"
   },
-  
+
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -102,6 +102,14 @@ var routes = [
     rtlName: "طباعة",
     icon: "tim-icons icon-align-center",
     component: Typography,
+    layout: "/admin"
+  },
+  {
+    path: "/course-table",
+    name: "course table",
+    rtlName: "ار تي ال",
+    icon: "tim-icons icon-world",
+    component: CourseTable,
     layout: "/admin"
   },
   {
