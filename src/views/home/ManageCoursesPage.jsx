@@ -19,15 +19,16 @@ class ManageCoursesPage extends React.Component {
       addCourseName: "",
       addCourseInstructors: "",
       addCourseAssistants: "",
-      addCourseCredits: "",
+      addCourseCredits: 0,
       addCourseIsOffered: false,
       addCourseLab: false,
       isEditCourseModalOpen: false,
+      editCourseCodeToEdit: "",
       editCourseCode: "",
       editCourseName: "",
       editCourseInstructors: "",
       editCourseAssistants: "",
-      editCourseCredits: "",
+      editCourseCredits: 0,
       editCourseIsOffered: false,
       editCourseLab: false
     };
@@ -50,7 +51,7 @@ class ManageCoursesPage extends React.Component {
       addCourseName: "",
       addCourseInstructors: "",
       addCourseAssistants: "",
-      addCourseCredits: "",
+      addCourseCredits: 0,
       addCourseIsOffered: false,
       addCourseLab: false,
     });
@@ -87,48 +88,55 @@ class ManageCoursesPage extends React.Component {
   editCourseModalToggle = () => {
     this.setState({
       isEditCourseModalOpen: !this.state.isEditCourseModalOpen,
+      editCourseCodeToEdit: "",
       editCourseCode: "",
       editCourseName: "",
       editCourseInstructors: "",
       editCourseAssistants: "",
-      editCourseCredits: "",
+      editCourseCredits: 0,
       editCourseIsOffered: false,
       editCourseLab: false
     });
   }
-  editCourseModalOpen = () => {
 
-    // editCourseCode: "",
-    // editCourseName: "",
-    // editCourseInstructors: "",
-    // editCourseAssistants: "",
-    // editCourseCredits: "",
-    // editCourseIsOffered: false,
-    // editCourseLab: false
+  editCourseModalOpen = (course) => {
+    this.editCourseModalToggle()
+    this.setState({
+      editCourseCodeToEdit: course.code,
+      editCourseCode: course.code,
+      editCourseName: course.name,
+      editCourseInstructors: course.instructors,
+      editCourseAssistants: course.assistants,
+      editCourseCredits: course.credit,
+      editCourseIsOffered: course.status,
+      editCourseLab: course.laboratory
+    });
   }
   
   editCourse = () => {
-    fetch(`${API_URL}/course/add`, {
-      method: "POST",
+    fetch(`${API_URL}/course/edit`, {
+      method: "PUT",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + globalStore.token
       },
       body: JSON.stringify({
-        code: this.state.addCourseCode,
-        name: this.state.addCourseName,
-        instructors: this.state.addCourseInstructors,
-        assistants: this.state.addCourseAssistants,
-        credit: this.state.addCourseCredits,
-        status: this.state.addCourseIsOffered,
-        laboratory: this.state.addCourseLab,
+        codeToEdit: this.state.editCourseCodeToEdit,
+        code: this.state.editCourseCode,
+        name: this.state.editCourseName,
+        instructors: this.state.editCourseInstructors,
+        assistants: this.state.editCourseAssistants,
+        credit: this.state.editCourseCredits,
+        status: this.state.editCourseIsOffered,
+        laboratory: this.state.editCourseLab,
       })
     }).then(res => {
+      this.editCourseModalToggle()
       if (!res.ok) 
         throw res;
       this.getAllCourses()
-      createNotification(this.state.addCourseCode + " succesfully added!", "success", this.refs.notify);
+      createNotification(this.state.addCourseCode + " succesfully updated!", "success", this.refs.notify);
     }).catch(err => {
       err.text().then(text => createNotification(text, "danger", this.refs.notify));
     });
@@ -190,7 +198,7 @@ class ManageCoursesPage extends React.Component {
                             <td>{course.status ? "Yes" : "No"}</td>
                             <td>{course.laboratory ? "Yes" : "No"}</td>
                             <td>
-                            <Button color="primary" onClick={this.toggleEditCourseModal} style={{marginRight: "8px"}}>Edit</Button>
+                            <Button color="primary" onClick={() => this.editCourseModalOpen(course)} style={{marginRight: "8px"}}>Edit</Button>
                             <Button color="primary" onClick={() => this.deleteCourse(course.code)}>Delete</Button>
                             </td>
                           </tr>
@@ -218,16 +226,6 @@ class ManageCoursesPage extends React.Component {
                 </div>
                 <ModalBody>
                   <form>
-
-
-                  {/* code: this.state.addCourseCode,
-                  name: this.state.addCourseName,
-                  instructors: this.state.addCourseInstructors,
-                  assistants: this.state.addCourseAssistants,
-                  credit: this.state.addCourseCredits,
-                  status: this.state.addCourseIsOffered,
-                  laboratory: this.state.addCourseLab, */}
-
                     <FormGroup>
                       <Label for="code">Code</Label>
                       <Input type="text" name="code" id="code" placeholder="Code" style={{color: "#222"}} 
@@ -251,7 +249,7 @@ class ManageCoursesPage extends React.Component {
                     <FormGroup>
                       <Label for="code">Credits</Label>
                       <Input type="number" name="code" id="code" placeholder="Credits" style={{color: "#222"}}
-                        value={this.state.addCourseCredit} onChange={(e) => this.setState({addCourseCredit: e.target.value})}/>
+                        value={this.state.addCourseCredits} onChange={(e) => this.setState({addCourseCredits: e.target.value})}/>
                     </FormGroup>
                     <FormGroup check>
                       <Label check>
@@ -285,32 +283,78 @@ class ManageCoursesPage extends React.Component {
                 </ModalFooter>
               </Modal>
               {/* edit course modal */}
-              {/* <Modal isOpen={this.state.modalDemo} toggle={this.toggleModalDemo}>
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="exampleModalLabel">
-                      Modal title
-                    </h5>
-                    <button
-                      type="button"
-                      className="close"
-                      data-dismiss="modal"
-                      aria-hidden="true"
-                      onClick={this.toggleModalDemo}>
-                      <i className="tim-icons icon-simple-remove" />
-                    </button>
-                  </div>
-                  <ModalBody>
-                      <p>Woohoo, you're reading this text in a modal!</p>
-                  </ModalBody>
-                  <ModalFooter>
-                      <Button color="secondary" onClick={this.toggleModalDemo}>
-                          Close
-                      </Button>
-                      <Button color="primary">
-                          Save changes
-                      </Button>
-                  </ModalFooter>
-              </Modal> */}
+              <Modal isOpen={this.state.isEditCourseModalOpen} toggle={this.editCourseModalToggle}>
+                <div className="modal-header">
+                  <h5 className="modal-title" id="editCourseModalLabel">
+                    Edit Course
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-hidden="true"
+                    onClick={this.editCourseModalToggle}>
+                    <i className="tim-icons icon-simple-remove" />
+                  </button>
+                </div>
+                <ModalBody>
+                  <form>
+                    <FormGroup>
+                      <Label for="code">Code</Label>
+                      <Input type="text" name="code" id="code" placeholder="Code" style={{color: "#222"}} 
+                        value={this.state.editCourseCode} onChange={(e) => this.setState({editCourseCode: e.target.value})}/>
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="code">Name</Label>
+                      <Input type="text" name="code" id="code" placeholder="Name" style={{color: "#222"}}
+                        value={this.state.editCourseName} onChange={(e) => this.setState({editCourseName: e.target.value})}/>
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="code">Instructors</Label>
+                      <Input type="text" name="code" id="code" placeholder="Instructors" style={{color: "#222"}}
+                        value={this.state.editCourseInstructors} onChange={(e) => this.setState({editCourseInstructors: e.target.value})}/>
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="code">Assistants</Label>
+                      <Input type="text" name="code" id="code" placeholder="Assistants" style={{color: "#222"}}
+                        value={this.state.editCourseAssistants} onChange={(e) => this.setState({editCourseAssistants: e.target.value})}/>
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="code">Credits</Label>
+                      <Input type="number" name="code" id="code" placeholder="Credits" style={{color: "#222"}}
+                        value={this.state.editCourseCredits} onChange={(e) => this.setState({editCourseCredits: e.target.value})}/>
+                    </FormGroup>
+                    <FormGroup check>
+                      <Label check>
+                        <Input type="checkbox" checked={this.state.editCourseIsOffered}
+                          onChange={(e) => this.setState({editCourseIsOffered: !this.state.editCourseIsOffered})}/>{' '}
+                        Is Offered
+                        <span className="form-check-sign">
+                          <span className="check"></span>
+                        </span>
+                      </Label>
+                    </FormGroup>
+                    <FormGroup check>
+                      <Label check>
+                        <Input type="checkbox" checked={this.state.editCourseLab}
+                          onChange={(e) => this.setState({editCourseLab: !this.state.editCourseLab})}/>{' '}
+                        Lab
+                        <span className="form-check-sign">
+                          <span className="check"></span>
+                        </span>
+                      </Label>
+                    </FormGroup>
+                  </form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="secondary" onClick={this.editCourseModalToggle}>
+                        Close
+                    </Button>
+                    <Button color="primary" onClick={this.editCourse}>
+                        Update Course
+                    </Button>
+                </ModalFooter>
+              </Modal>
             </Col>
           </Row>
         </div>
