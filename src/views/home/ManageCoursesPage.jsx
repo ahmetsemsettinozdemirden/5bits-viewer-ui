@@ -183,6 +183,7 @@ class ManageCoursesPage extends React.Component {
                         <th>Credits</th>
                         <th>Is Offered</th>
                         <th>Lab</th>
+                        <th>Actions</th>
                         <th />
                       </tr>
                     </thead>
@@ -198,8 +199,14 @@ class ManageCoursesPage extends React.Component {
                             <td>{course.status ? "Yes" : "No"}</td>
                             <td>{course.laboratory ? "Yes" : "No"}</td>
                             <td>
-                            <Button color="primary" onClick={() => this.editCourseModalOpen(course)} style={{marginRight: "8px"}}>Edit</Button>
-                            <Button color="primary" onClick={() => this.deleteCourse(course.code)}>Delete</Button>
+                            <Button  className="btn-icon btn-simple"
+                                color="success"
+                                size="sm" 
+                                onClick={() => this.editCourseModalOpen(course)} style={{marginRight: "8px"}}><i className="fa fa-edit" /></Button>
+                            <Button className="btn-icon btn-simple"
+                                color="danger"
+                                size="sm" 
+                                onClick={() => this.deleteCourse(course.code)}><i className="fa fa-times" /></Button>
                             </td>
                           </tr>
                         );
