@@ -1,0 +1,297 @@
+import React from "react";
+
+// reactstrap components
+import { Redirect } from "react-router-dom";
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, Row, Col, CardHeader, CardBody, 
+  Table, Modal, ModalFooter, ModalBody, Input, FormGroup, Label } from "reactstrap";
+import { view } from "react-easy-state";
+import globalStore from "../../store/globalStore";
+import classnames from "classnames";
+import { API_URL } from "../../config";
+import Notify from "react-notification-alert";
+import { createNotification } from "../../helpers/notificationHelper"
+
+const sections = [
+  "First Year",
+  "Second Year",
+  "Third Year",
+  "Fourth Year",
+  "Graduate"
+];
+
+const days = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday"
+]
+
+const hours = [
+  "08:45 - 09:30",
+  "09:45 - 10:30",
+  "10:45 - 11:30",
+  "11:45 - 12:30",
+  "13:30 - 14:15",
+  "14:30 - 15:15",
+  "15:30 - 16:15",
+  "16:30 - 17:15"
+];
+
+class WeeklySchedulePage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeSection: "First Year",
+      weeklyScheduleNodes: null,
+      addCourseModal: false,
+      activeDay: "",
+      activeHour: "",
+      offeredCourses: [],
+
+      activeTab: "1",
+      courseModal: false,
+      course: "",
+      node: ""
+    };
+  }
+
+  componentDidMount() {
+    this.getWeeklySchedule();
+    this.getOfferedCourses();
+  }
+
+  getWeeklySchedule() {
+    fetch(`${API_URL}/weekly-schedule-node`)
+      .then(res => res.json())
+      .then(jsonData => {
+        var weeklyScheduleNodes = {}
+        for(let section of sections) {
+          weeklyScheduleNodes[section] = {}
+          for(let day of days) {
+            weeklyScheduleNodes[section][day] = {}
+            for(let hour of hours) {
+              weeklyScheduleNodes[section][day][hour] = null
+            }
+          }
+        }
+        jsonData.forEach(e => {
+          weeklyScheduleNodes[e.section][e.day][e.hour] = e.courses
+        })
+        this.setState({ weeklyScheduleNodes });
+      });
+  }
+
+  getOfferedCourses() {
+    fetch(`${API_URL}/course/offered`)
+      .then(res => res.json())
+      .then(jsonData => {
+        this.setState({
+          offeredCourses: jsonData
+        });
+      });
+  }
+
+  // openModal = node => event => {
+  //   this.setState({ node: node });
+  //   this.toggleCourseModal();
+  // };
+
+  // addCourse = event => {
+  //   var node = this.state.node;
+  //   var course = this.state.course;
+  //   console.log(node, course);
+  //   node.courses.push(course);
+  //   this.updateWeeklyScheduleNode(node, course, "added to");
+  //   this.toggleCourseModal();
+  // };
+
+  // removeCourse = (node, course) => event => {
+  //   console.log(node, course);
+  //   var index = node.courses.indexOf(course);
+  //   console.log(index);
+  //   if (index !== -1) {
+  //     node.courses.splice(index, 1);
+  //     console.log(node, course, "removed from");
+  //   }
+  //   this.updateWeeklyScheduleNode(node, course, "removed from");
+  // };
+
+  // updateWeeklyScheduleNode(node, course, modeText) {
+  //   fetch(`${API_URL}/weekly-schedule-node`, {
+  //     method: "PUT",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //       Authorization: "Bearer " + globalStore.token
+  //     },
+  //     body: JSON.stringify({
+  //       section: node.section,
+  //       day: node.day,
+  //       hour: node.hour,
+  //       courses: node.courses
+  //     })
+  //   }).then(res => {
+  //     if (!res.ok) 
+  //       throw res;
+  //     this.getWeeklySchedule();
+  //     createNotification(course + " succesfully " + modeText + " " + node.section + ", " + node.day + ", " + node.hour, "success", this.refs.notify);
+  //   })
+  //   .catch(err => {
+  //     err.text().then(text => createNotification(text, "danger", this.refs.notify));
+  //   });
+  // }
+
+  // onCourseChange = event => {
+  //   this.setState({ course: event.target.value });
+  // };
+
+  removeCourse = (section, day, hour, course) => {
+
+  }
+
+  openAddCourseModal = (activeDay, activeHour ) => {
+    this.setState({ activeDay, activeHour })
+    this.toggleAddCourseModal()
+  }
+
+  toggleAddCourseModal = () => {
+    this.setState({
+      addCourseModal: !this.state.addCourseModal
+    });
+  }
+
+  render() {
+    if (globalStore.token === "") return <Redirect to="/login/login" />;
+    return (
+      <div className="content">
+        <Notify ref="notify" />
+        <Row>
+          <Col md="12">
+            <Card>
+              <CardHeader>
+                <CardTitle tag="h2">Weekly Schedule</CardTitle>
+              </CardHeader>
+              <CardBody>
+                {sections.map(section => {
+                  return (
+                    <Button
+                      key={section}
+                      color={this.state.activeSection === section ? "primary" : "secondary"}
+                      onClick={e => this.setState({activeSection: section})}>
+                      {section}
+                    </Button>
+                  );
+                })}
+                <Table>
+                  <thead>
+                    <tr>
+                      <th />
+                      <th>Monday</th>
+                      <th>Tuesday</th>
+                      <th>Wednesday</th>
+                      <th>Thursday</th>
+                      <th>Friday</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {hours.map(hour => {
+                      return (
+                        <tr key={hour}>
+                          <td>{hour}</td>
+                          {days.map(day => {
+                            return (
+                              <td key={hour + day}>
+                                {this.state.weeklyScheduleNodes != null 
+                                  && this.state.weeklyScheduleNodes[this.state.activeSection][day][hour] != null
+                                  && this.state.weeklyScheduleNodes[this.state.activeSection][day][hour].map(course => {
+                                    return (
+                                      <div key={course}>
+                                        {course}
+                                        <Button
+                                          className="btn-round btn-icon"
+                                          size="sm"
+                                          color="danger"
+                                          onClick={this.removeCourse(this.state.activeSection, day, hour, course)}>
+                                          <i className="tim-icons icon-simple-remove" />
+                                        </Button>
+                                      </div>
+                                    );
+                                  })}
+                                <Button
+                                  className="btn-round btn-icon"
+                                  size="sm"
+                                  color="success"
+                                  onClick={this.openAddCourseModal(day, hour)}>                     
+                                  <i className="tim-icons icon-simple-add" />
+                                </Button>
+                              </td>
+                          )}
+                        )}
+                      </tr>
+                      )
+                    })}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+            <Modal isOpen={this.state.addCourseModal} toggle={this.toggleAddCourseModal}>
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Course Form
+                </h5>
+                <Button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                  onClick={this.toggleCourserModal}
+                />
+              </div>
+              <ModalBody>
+                <Card>
+                  <CardBody>
+                    <form>
+                      {this.state.offeredCourses.map((course, index) => {
+                        return (
+                          <FormGroup
+                            key={index}
+                            check
+                            inline
+                            className="form-check-radio"
+                          >
+                            <Label className="form-check-label">
+                              <Input
+                                type="radio"
+                                name="exampleRadios1"
+                                id="exampleRadios11"
+                                value={course.code}
+                                onChange={this.onCourseChange}
+                              />
+                              {course.code}
+                              <span className="form-check-sign" />
+                            </Label>
+                          </FormGroup>
+                        );
+                      })}
+                    </form>
+                  </CardBody>
+                </Card>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="secondary" onClick={this.toggleCourseModal}>
+                  Close
+                </Button>
+                <Button color="primary" onClick={this.addCourse}>
+                  Add
+                </Button>
+              </ModalFooter>
+            </Modal>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+}
+
+export default view(WeeklySchedulePage);
