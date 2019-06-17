@@ -11,8 +11,8 @@ import {
   Row,
   Col
 } from "reactstrap";
-import { view } from 'react-easy-state'
-import globalStore from '../../store/globalStore'
+import { view } from "react-easy-state";
+import globalStore from "../../store/globalStore";
 
 class ManageCoursesPage extends React.Component {
   constructor(props) {
@@ -21,23 +21,23 @@ class ManageCoursesPage extends React.Component {
     this.state = {
       courses: [
         {
-          "courseCode":"CENG113",
-          "courseName":"Programming Basics",
-          "lecturerName":"Nesli Erdogmus",
-          "isOffered":"Yes"
+          courseCode: "CENG113",
+          courseName: "Programming Basics",
+          lecturerName: "Nesli Erdogmus",
+          isOffered: "Yes"
         },
         {
-          "courseCode":"CENG312",
-          "courseName":"Computer Networks",
-          "lecturerName":"Tolga Ayav",
-          "isOffered":"No"
+          courseCode: "CENG312",
+          courseName: "Computer Networks",
+          lecturerName: "Tolga Ayav",
+          isOffered: "No"
         }
       ]
     };
   }
 
   render() {
-    if(globalStore.token === '') return <Redirect to="/login/login" />
+    if (globalStore.token === "") return <Redirect to="/login/login" />;
     return (
       <>
         <div className="content">

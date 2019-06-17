@@ -17,24 +17,37 @@ import {
   Col,
   CardHeader,
   CardBody,
-  Table
+  Table,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Input,
+  FormGroup,
+  Label
 } from "reactstrap";
 import { view } from "react-easy-state";
 import globalStore from "../../store/globalStore";
 import classnames from "classnames";
 import { API_URL } from "../../config";
+import Notify from "react-notification-alert";
 
 class WeeklySchedulePage extends React.Component {
   constructor(props) {
     super(props);
-    this.toggle = this.toggle.bind(this);
+    //this.toggle = this.toggle.bind(this);
     this.state = {
       activeTab: "1",
-      weeklyScheduleNodes: []
+      weeklyScheduleNodes: [],
+      offeredCourses: [],
+      courseModal: false,
+      course: "",
+      node: ""
     };
+    this.toggleCourseModal = this.toggleCourseModal.bind(this);
   }
 
-  componentDidMount() {
+  getWeeklySchedule() {
     fetch(`${API_URL}/weekly-schedule-node`)
       .then(res => res.json())
       .then(jsonData => {
@@ -42,6 +55,106 @@ class WeeklySchedulePage extends React.Component {
           weeklyScheduleNodes: jsonData
         });
       });
+  }
+
+  getOfferedCourses() {
+    fetch(`${API_URL}/course/offered`)
+      .then(res => res.json())
+      .then(jsonData => {
+        this.setState({
+          offeredCourses: jsonData
+        });
+      });
+  }
+
+  componentDidMount() {
+    this.getWeeklySchedule();
+    this.getOfferedCourses();
+  }
+
+  openModal = node => event => {
+    this.setState({ node: node });
+    this.toggleCourseModal();
+  };
+
+  addCourse = event => {
+    var node = this.state.node;
+    var course = this.state.course;
+    console.log(node, course);
+    node.courses.push(course);
+    this.updateWeeklyScheduleNode(node, course, "added to");
+    this.toggleCourseModal();
+  };
+
+  removeCourse = (node, course) => event => {
+    console.log(node, course);
+    var index = node.courses.indexOf(course);
+    console.log(index);
+    if (index !== -1) {
+      node.courses.splice(index, 1);
+      console.log(node, course, "removed from");
+    }
+    this.updateWeeklyScheduleNode(node, course, "removed from");
+  };
+
+  updateWeeklyScheduleNode(node, course, modeText) {
+    fetch(`${API_URL}/weekly-schedule-node`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + globalStore.token
+      },
+      body: JSON.stringify({
+        section: node.section,
+        day: node.day,
+        hour: node.hour,
+        courses: node.courses
+      })
+    })
+      .then(res => {
+        if (!res.ok) throw res;
+        this.getWeeklySchedule();
+        var options = {
+          place: "bc",
+          message: (
+            <div>
+              {course} succesfully {modeText} {node.section}, {node.day},{" "}
+              {node.hour}
+            </div>
+          ),
+          type: "success",
+          icon: "tim-icons icon-bell-55",
+          autoDismiss: 4
+        };
+        this.refs.notify.notificationAlert(options);
+      })
+      .catch(err => {
+        err.text().then(text => {
+          var options = {
+            place: "bc",
+            message: (
+              <div>
+                <div>{text}</div>
+              </div>
+            ),
+            type: "danger",
+            icon: "tim-icons icon-bell-55",
+            autoDismiss: 7
+          };
+          this.refs.notify.notificationAlert(options);
+        });
+      });
+  }
+
+  onCourseChange = event => {
+    this.setState({ course: event.target.value });
+  };
+
+  toggleCourseModal() {
+    this.setState({
+      courseModal: !this.state.courseModal
+    });
   }
 
   toggle(tab) {
@@ -52,31 +165,19 @@ class WeeklySchedulePage extends React.Component {
     }
   }
 
-  boom() {
+  createHead() {
     return (
-      <tr>
-        <td>
-          <strong>09:45 &ndash; 10:30</strong>
-        </td>
-        <td>CENG 504</td>
-        <td>CENG 505</td>
-        <td>
-          CENG 533
-          <br />
-          CENG 525
-        </td>
-        <td>
-          CENG 611
-          <br />
-          CENG 541
-        </td>
-        <td>CENG 506</td>
-      </tr>
+      <thead>
+        <tr>
+          <th />
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+        </tr>
+      </thead>
     );
-  }
-
-  interesting(course) {
-    return course + "\br";
   }
 
   createTable(section) {
@@ -109,12 +210,43 @@ class WeeklySchedulePage extends React.Component {
                   return (
                     <td key={index}>
                       {node.courses.map((course, index) => {
-                        return <div key={index}>{course}</div>;
+                        return (
+                          <div key={index}>
+                            {course}
+                            {"                    "}
+                            <Button
+                              className="btn-round btn-icon"
+                              size="sm"
+                              color="danger"
+                              onClick={this.removeCourse(node, course)}
+                            >
+                              <i className="tim-icons icon-simple-remove" />
+                            </Button>
+                          </div>
+                        );
                       })}
+                      <Button
+                        className="btn-round btn-icon"
+                        size="sm"
+                        color="success"
+                        onClick={this.openModal(node)}
+                      >
+                        <i className="tim-icons icon-simple-add" />
+                      </Button>
                     </td>
                   );
                 } else {
-                  return <td key={index} />;
+                  return (
+                    <td key={index}>
+                      <Button
+                        className="btn-round btn-icon"
+                        size="sm"
+                        color="info"
+                      >
+                        <i className="tim-icons icon-simple-add" />
+                      </Button>
+                    </td>
+                  );
                 }
               })}
             </tr>
@@ -122,26 +254,13 @@ class WeeklySchedulePage extends React.Component {
         })}
       </tbody>
     );
-
-    /*hours.forEach(hour => {
-      
-        return (
-          <tr><td>{hour}</td>
-            {this.state.weeklyScheduleNodes[nodeCounter].courses.map((course) => {
-              return (
-                <td>{course}</td>
-              );
-            })}
-          </tr>
-        );
-
-    })*/
   }
 
   render() {
-    //if(globalStore.token === '') return <Redirect to="/login/login" />
+    //if (globalStore.token === "") return <Redirect to="/login/login" />;
     return (
       <div className="content">
+        <Notify ref="notify" />;
         <Row>
           <Col md="12">
             <Card>
@@ -183,119 +302,122 @@ class WeeklySchedulePage extends React.Component {
                       <CardTitle tag="h2">Third Year</CardTitle>
                     </NavLink>
                   </NavItem>
+                  <NavItem>
+                    <NavLink
+                      className={classnames({
+                        active: this.state.activeTab === "4"
+                      })}
+                      onClick={() => {
+                        this.toggle("4");
+                      }}
+                    >
+                      <CardTitle tag="h2">Fourth Year</CardTitle>
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      className={classnames({
+                        active: this.state.activeTab === "5"
+                      })}
+                      onClick={() => {
+                        this.toggle("5");
+                      }}
+                    >
+                      <CardTitle tag="h2">Graduate</CardTitle>
+                    </NavLink>
+                  </NavItem>
                 </Nav>
               </CardHeader>
               <CardBody>
                 <TabContent activeTab={this.state.activeTab}>
                   <TabPane tabId="1">
                     <Table>
-                      <thead>
-                        <tr>
-                          <th />
-                          <th>Monday</th>
-                          <th>Tuesday</th>
-                          <th>Wednesday</th>
-                          <th>Thursday</th>
-                          <th>Friday</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <strong>08:45 &ndash; 09:30</strong>
-                          </td>
-                          <td>ENG 102</td>
-                          <td>&nbsp;</td>
-                          <td>&nbsp;</td>
-                          <td>&nbsp;</td>
-                          <td>&nbsp;</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <strong>09:45 &ndash; 10:30</strong>
-                          </td>
-                          <td>ENG 102</td>
-                          <td>CENG 112</td>
-                          <td>ECON 106</td>
-                          <td>MATH 144</td>
-                          <td>&nbsp;</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <strong>10:45 &ndash; 11:30</strong>
-                          </td>
-                          <td>ENG 102</td>
-                          <td>CENG 112</td>
-                          <td>ECON 106</td>
-                          <td>MATH 144</td>
-                          <td>MATH 142</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <strong>11:45 &ndash; 12:30</strong>
-                          </td>
-                          <td>&nbsp;</td>
-                          <td>CENG 112</td>
-                          <td>ECON 106</td>
-                          <td>MATH 144</td>
-                          <td>MATH 142</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <strong>13:30 &ndash; 14:15</strong>
-                          </td>
-                          <td>MATH 142</td>
-                          <td>&nbsp;</td>
-                          <td>PHYS 122</td>
-                          <td>&nbsp;</td>
-                          <td>CENG 114</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <strong>14:30 &ndash; 15:15</strong>
-                          </td>
-                          <td>MATH 142</td>
-                          <td>&nbsp;</td>
-                          <td>PHYS 122</td>
-                          <td>&nbsp;</td>
-                          <td>CENG 114</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <strong>15:30 &ndash; 16:15</strong>
-                          </td>
-                          <td>MATH 142</td>
-                          <td>PHYS 122</td>
-                          <td>PHYS 122</td>
-                          <td>PHYS 122</td>
-                          <td>CENG 114</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <strong>16:30 &ndash; 17:15</strong>
-                          </td>
-                          <td>&nbsp;</td>
-                          <td>PHYS 122</td>
-                          <td>&nbsp;</td>
-                          <td>PHYS 122</td>
-                          <td>&nbsp;</td>
-                        </tr>
-                      </tbody>
+                      {this.createHead()}
+                      {this.createTable(0)}
                     </Table>
                   </TabPane>
                   <TabPane tabId="2">
                     <Table>
-                      <tbody>{this.boom()}</tbody>
+                      {this.createHead()}
+                      {this.createTable(1)}
                     </Table>
-                    <p>a</p>
                   </TabPane>
                   <TabPane tabId="3">
-                    <Table>{this.createTable(0)}</Table>
-                    <p>a</p>
+                    <Table>
+                      {this.createHead()}
+                      {this.createTable(2)}
+                    </Table>
+                  </TabPane>
+                  <TabPane tabId="4">
+                    <Table>
+                      {this.createHead()}
+                      {this.createTable(3)}
+                    </Table>
+                  </TabPane>
+                  <TabPane tabId="5">
+                    <Table>
+                      {this.createHead()}
+                      {this.createTable(4)}
+                    </Table>
                   </TabPane>
                 </TabContent>
               </CardBody>
             </Card>
+            <Modal
+              isOpen={this.state.courseModal}
+              toggle={this.toggleCourseModal}
+            >
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Course Form
+                </h5>
+                <Button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                  onClick={this.toggleCourserModal}
+                />
+              </div>
+              <ModalBody>
+                <Card>
+                  <CardBody>
+                    <form>
+                      {this.state.offeredCourses.map((course, index) => {
+                        return (
+                          <FormGroup
+                            key={index}
+                            check
+                            inline
+                            className="form-check-radio"
+                          >
+                            <Label className="form-check-label">
+                              <Input
+                                type="radio"
+                                name="exampleRadios1"
+                                id="exampleRadios11"
+                                value={course.code}
+                                onChange={this.onCourseChange}
+                              />
+                              {course.code}
+                              <span className="form-check-sign" />
+                            </Label>
+                          </FormGroup>
+                        );
+                      })}
+                    </form>
+                  </CardBody>
+                </Card>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="secondary" onClick={this.toggleCourseModal}>
+                  Close
+                </Button>
+                <Button color="primary" onClick={this.addCourse}>
+                  Add
+                </Button>
+              </ModalFooter>
+            </Modal>
           </Col>
         </Row>
       </div>

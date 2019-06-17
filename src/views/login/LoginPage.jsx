@@ -1,8 +1,8 @@
 import React from "react";
 
 // reactstrap components
-import { 
-  Row, 
+import {
+  Row,
   Col,
   FormGroup,
   Label,
@@ -14,9 +14,9 @@ import {
   CardBody
 } from "reactstrap";
 import { Link, Redirect } from "react-router-dom";
-import Notify from 'react-notification-alert';
-import { API_URL } from "../../config"
-import globalStore from '../../store/globalStore'
+import Notify from "react-notification-alert";
+import { API_URL } from "../../config";
+import globalStore from "../../store/globalStore";
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -25,69 +25,76 @@ class LoginPage extends React.Component {
     this.state = {
       email: "test@email.com",
       password: "password"
-    }
+    };
   }
 
-  onEmailChange = (event) => {
-    this.setState({email: event.target.value});
-  }
+  onEmailChange = event => {
+    this.setState({ email: event.target.value });
+  };
 
-  onPasswordChange = (event) => {
-    this.setState({password: event.target.value});
-  }
+  onPasswordChange = event => {
+    this.setState({ password: event.target.value });
+  };
 
-  onLogin = (event) => {
+  onLogin = event => {
     fetch(`${API_URL}/login`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         email: this.state.email,
         password: this.state.password
       })
-    }).then(res => {
-      if (!res.ok)
-        throw res
-      return res.json()
-    }).then(body => {
-      console.log("success")
-      globalStore.email = this.state.email
-      globalStore.token = body.accessToken
-      this.forceUpdate();
-    }).catch(err => {
-      err.text().then(text => {
-        console.log(text)
-        var options = {
-          place: "tc",
-          message: (
-            <div>
-              <div>
-                {text}
-              </div>
-            </div>
-          ),
-          type: "danger",
-          icon: "tim-icons icon-bell-55",
-          autoDismiss: 7
-        };
-        this.refs.notify.notificationAlert(options);
-      })
     })
-  }
+      .then(res => {
+        if (!res.ok) throw res;
+        return res.json();
+      })
+      .then(body => {
+        globalStore.email = this.state.email;
+        globalStore.token = body.accessToken;
+        this.forceUpdate();
+      })
+      .catch(err => {
+        err.text().then(text => {
+          var options = {
+            place: "tc",
+            message: (
+              <div>
+                <div>{text}</div>
+              </div>
+            ),
+            type: "danger",
+            icon: "tim-icons icon-bell-55",
+            autoDismiss: 7
+          };
+          this.refs.notify.notificationAlert(options);
+        });
+      });
+  };
 
   render() {
-    if(globalStore.token) return <Redirect to="/admin/weekly-schedule" />
+    if (globalStore.token) return <Redirect to="/admin/weekly-schedule" />;
     return (
       <>
-        <div className="content" style={{paddingTop: "80px"}}>
-          <Notify ref="notify"/>
+        <div className="content" style={{ paddingTop: "80px" }}>
+          <Notify ref="notify" />
           <Row className="justify-content-md-center">
             <Col md="4">
               <Card>
                 <CardHeader>
-                  <h1 style={{font: "Poppins", fontSize:"64px", textAlign: "center", paddingTop: "32px"}}>5Bits Viewer</h1>
+                  <h1
+                    style={{
+                      font: "Poppins",
+                      fontSize: "64px",
+                      textAlign: "center",
+                      paddingTop: "32px"
+                    }}
+                  >
+                    5Bits Viewer
+                  </h1>
                 </CardHeader>
                 <CardBody>
                   <form>
@@ -114,10 +121,18 @@ class LoginPage extends React.Component {
                         onChange={this.onPasswordChange}
                       />
                     </FormGroup>
-                    <Button style={{width: "100%"}} color="primary" onClick={this.onLogin}>
+                    <Button
+                      style={{ width: "100%" }}
+                      color="primary"
+                      onClick={this.onLogin}
+                    >
                       Login
                     </Button>
-                    <Link to={{pathname:"/login/forgot-password"}} className="btn-fill btn btn-secondary" style={{width: "100%", marginLeft: "1px"}}> 
+                    <Link
+                      to={{ pathname: "/login/forgot-password" }}
+                      className="btn-fill btn btn-secondary"
+                      style={{ width: "100%", marginLeft: "1px" }}
+                    >
                       Forgot Password
                     </Link>
                   </form>
