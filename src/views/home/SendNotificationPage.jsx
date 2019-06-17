@@ -76,7 +76,7 @@ class SendNotificationPage extends React.Component {
             <Col md="12">
               <Card>
                 <CardHeader>
-                  <CardTitle tag="h2">Send Notification{this.state.selectedEmailList} - {this.state.selectedEvent}</CardTitle>
+                  <CardTitle tag="h2">Send Notification</CardTitle>
                 </CardHeader>
                 <CardBody>
                   {this.state.selectedEmailList != null &&
@@ -107,26 +107,27 @@ class SendNotificationPage extends React.Component {
                         return (
                           <tr key={event.id}>
                             <td>
-                              <FormGroup check inline className="form-check-radio">
-                                <Label className="form-check-label">
-                                    <Input type="radio" name="exampleRadios1" id="exampleRadios11"
-                                      value={event.id} checked={event.id === this.state.selectedEvent} onChange={e => this.setState({selectedEvent: e.target.value})}/>
-                                    <span className="form-check-sign"></span>
-                                </Label>
-                              </FormGroup>
+                              <input type="radio" name="exampleRadios1" id={"exampleRadios1" + event.id}
+                                value={event.id} checked={event.id == this.state.selectedEvent} 
+                                onChange={e => this.setState({selectedEvent: e.target.value})}/>
                             </td>
                             <td>{event.title}</td>
                             <td>{event.body}</td>
                           </tr>
                         );
                       })}
+                      {this.state.selectedEvent == null &&
+                        <div>Loading...</div>
+                      }
                     </tbody>
                   </Table>
                 </CardBody>
               </Card>
-              <Button color="primary" onClick={this.sendNotification}>
-                Send Notification
-              </Button>
+              {this.state.selectedEmailList != null && this.state.selectedEvent && 
+                <Button color="primary" onClick={this.sendNotification}>
+                  Send Notification
+                </Button>
+              }
             </Col>
           </Row>
         </div>
