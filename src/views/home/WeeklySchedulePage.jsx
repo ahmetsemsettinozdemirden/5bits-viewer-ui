@@ -1,31 +1,9 @@
 import React from "react";
 
 // reactstrap components
-import { Link, Redirect } from "react-router-dom";
-import {
-  TabContent,
-  TabPane,
-  Navbar,
-  Nav,
-  NavItem,
-  NavLink,
-  Card,
-  Button,
-  CardTitle,
-  CardText,
-  Row,
-  Col,
-  CardHeader,
-  CardBody,
-  Table,
-  Modal,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  Input,
-  FormGroup,
-  Label
-} from "reactstrap";
+import { Redirect } from "react-router-dom";
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, Row, Col, CardHeader, CardBody, 
+  Table, Modal, ModalFooter, ModalBody, Input, FormGroup, Label } from "reactstrap";
 import { view } from "react-easy-state";
 import globalStore from "../../store/globalStore";
 import classnames from "classnames";
@@ -257,10 +235,10 @@ class WeeklySchedulePage extends React.Component {
   }
 
   render() {
-    //if (globalStore.token === "") return <Redirect to="/login/login" />;
+    if (globalStore.token === "") return <Redirect to="/login/login" />;
     return (
       <div className="content">
-        <Notify ref="notify" />;
+        <Notify ref="notify" />
         <Row>
           <Col md="12">
             <Card>

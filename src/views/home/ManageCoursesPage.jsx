@@ -2,15 +2,7 @@ import React from "react";
 
 // reactstrap components
 import { Link, Redirect } from "react-router-dom";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Table,
-  Row,
-  Col
-} from "reactstrap";
+import { Card, CardHeader, CardTitle, CardBody, Table, Row, Col } from "reactstrap";
 import { view } from "react-easy-state";
 import globalStore from "../../store/globalStore";
 

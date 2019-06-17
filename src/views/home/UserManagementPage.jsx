@@ -2,23 +2,8 @@ import React from "react";
 
 // reactstrap components
 import { Link, Redirect } from "react-router-dom";
-import {
-  Row,
-  Col,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Table,
-  Input,
-  FormGroup,
-  Label
-} from "reactstrap";
+import { Row, Col, Button, Modal, ModalFooter, ModalBody, Card, CardHeader, CardTitle, CardBody, 
+  Table, Input, FormGroup, Label } from "reactstrap";
 import { view } from "react-easy-state";
 import globalStore from "../../store/globalStore";
 import { API_URL } from "../../config";
@@ -49,33 +34,27 @@ class UserManagementPage extends React.Component {
         "Content-Type": "application/json",
         Authorization: "Bearer " + globalStore.token
       }
-    })
-      .then(res => {
-        if (!res.ok) throw res;
-        return res.json();
-      })
-      .then(body => {
-        this.setState({
-          contentManagers: body
-        });
-        this.forceUpdate();
-      })
-      .catch(err => {
-        err.text().then(text => {
-          var options = {
-            place: "tc",
-            message: (
-              <div>
-                <div>{text}</div>
-              </div>
-            ),
-            type: "danger",
-            icon: "tim-icons icon-bell-55",
-            autoDismiss: 7
-          };
-          this.refs.notify.notificationAlert(options);
-        });
+    }).then(res => {
+      if (!res.ok) throw res;
+      return res.json();
+    }).then(body => {
+      this.setState({ contentManagers: body });
+    }).catch(err => {
+      err.text().then(text => {
+        var options = {
+          place: "tc",
+          message: (
+            <div>
+              <div>{text}</div>
+            </div>
+          ),
+          type: "danger",
+          icon: "tim-icons icon-bell-55",
+          autoDismiss: 7
+        };
+        this.refs.notify.notificationAlert(options);
       });
+    });
   }
 
   addContentManager = event => {
@@ -173,6 +152,7 @@ class UserManagementPage extends React.Component {
     return (
       <>
         <div className="content">
+          <Notify ref="notify" />
           <Row>
             <Col md="12">
               <Card>
@@ -286,7 +266,6 @@ class UserManagementPage extends React.Component {
             </Col>
           </Row>
         </div>
-        <Notify ref="notify" />
       </>
     );
   }

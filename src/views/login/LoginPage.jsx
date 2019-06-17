@@ -1,18 +1,7 @@
 import React from "react";
 
 // reactstrap components
-import {
-  Row,
-  Col,
-  FormGroup,
-  Label,
-  Input,
-  FormText,
-  Button,
-  Card,
-  CardHeader,
-  CardBody
-} from "reactstrap";
+import { Row, Col, FormGroup, Label, Input, FormText, Button, Card, CardHeader, CardBody } from "reactstrap";
 import { Link, Redirect } from "react-router-dom";
 import Notify from "react-notification-alert";
 import { API_URL } from "../../config";
