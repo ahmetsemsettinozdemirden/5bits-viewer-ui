@@ -2,13 +2,33 @@ import React from "react";
 
 // reactstrap components
 import { Redirect } from "react-router-dom";
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, Row, Col, CardHeader, CardBody, 
-  Table, Modal, ModalFooter, ModalBody, Input, FormGroup, Label } from "reactstrap";
+import {
+  TabContent,
+  TabPane,
+  Nav,
+  NavItem,
+  NavLink,
+  Card,
+  Button,
+  CardTitle,
+  Row,
+  Col,
+  CardHeader,
+  CardBody,
+  Table,
+  Modal,
+  ModalFooter,
+  ModalBody,
+  Input,
+  FormGroup,
+  Label
+} from "reactstrap";
 import { view } from "react-easy-state";
 import globalStore from "../../store/globalStore";
 import classnames from "classnames";
 import { API_URL } from "../../config";
 import Notify from "react-notification-alert";
+import { createNotification } from "../../helpers/notificationHelper";
 
 class WeeklySchedulePage extends React.Component {
   constructor(props) {
@@ -24,6 +44,32 @@ class WeeklySchedulePage extends React.Component {
     };
     this.toggleCourseModal = this.toggleCourseModal.bind(this);
   }
+
+  publish = event => {
+    fetch(`${API_URL}/publish`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + globalStore.token
+      },
+      body: JSON.stringify({})
+    })
+      .then(res => {
+        console.log(res.status, res.statusText);
+        if (!res.ok) throw res;
+        createNotification(
+          "Changes published to the website",
+          "success",
+          this.refs.notify
+        );
+      })
+      .catch(err => {
+        err.text().then(text => {
+          createNotification(text, "danger", this.refs.notify);
+        });
+      });
+  };
 
   getWeeklySchedule() {
     fetch(`${API_URL}/weekly-schedule-node`)
@@ -106,9 +152,11 @@ class WeeklySchedulePage extends React.Component {
           autoDismiss: 4
         };
         this.refs.notify.notificationAlert(options);
+        course = "";
       })
       .catch(err => {
         err.text().then(text => {
+          node.courses = [];
           var options = {
             place: "bc",
             message: (
@@ -341,6 +389,9 @@ class WeeklySchedulePage extends React.Component {
                 </TabContent>
               </CardBody>
             </Card>
+            <Button color="primary" onClick={this.publish}>
+              Publish
+            </Button>
             <Modal
               isOpen={this.state.courseModal}
               toggle={this.toggleCourseModal}

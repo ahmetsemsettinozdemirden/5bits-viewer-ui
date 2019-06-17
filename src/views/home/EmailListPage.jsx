@@ -81,7 +81,7 @@ class EmailListPage extends React.Component {
         if (!res.ok) throw res;
         this.getEmailLists();
         this.toggleEmailModal();
-        var text = this.state.name + " successfully edited";
+        var text = this.state.name + " successfully added";
         createNotification(text, "success", this.refs.notify);
       })
       .catch(err => {
